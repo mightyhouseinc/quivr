@@ -35,9 +35,7 @@ class ApiKeys(ApiKeysInterface):
             )
             .execute()
         )
-        if len(response.data) == 0:
-            return None
-        return ApiKey(**response.data[0])
+        return None if len(response.data) == 0 else ApiKey(**response.data[0])
 
     def delete_api_key(self, key_id: str, user_id: UUID):
         return (
@@ -53,23 +51,21 @@ class ApiKeys(ApiKeysInterface):
         )
 
     def get_active_api_key(self, api_key: str):
-        response = (
+        return (
             self.db.table("api_keys")
             .select("api_key", "creation_time")
             .filter("api_key", "eq", api_key)
             .filter("is_active", "eq", str(True))
             .execute()
         )
-        return response
 
     def get_user_id_by_api_key(self, api_key: str):
-        response = (
+        return (
             self.db.table("api_keys")
             .select("user_id")
             .filter("api_key", "eq", api_key)
             .execute()
         )
-        return response
 
     def get_user_api_keys(self, user_id):
         response = (

@@ -27,7 +27,7 @@ class BrainVectorService:
     def update_brain_with_file(self, file_sha1: str):
         # not  used
         vector_ids = self.repository.get_vector_ids_from_file_sha1(file_sha1)
-        if vector_ids == None or len(vector_ids) == 0:
+        if vector_ids is None or len(vector_ids) == 0:
             logger.info(f"No vector ids found for file {file_sha1}")
             return
 
@@ -57,6 +57,4 @@ class BrainVectorService:
     def brain_size(self):
         # TODO: change the calculation of the brain size, calculate the size stored for the embeddings + what's in the storage
         self.get_unique_brain_files()
-        current_brain_size = sum(float(doc["size"]) for doc in self.files)
-
-        return current_brain_size
+        return sum(float(doc["size"]) for doc in self.files)

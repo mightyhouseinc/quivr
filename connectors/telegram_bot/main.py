@@ -29,7 +29,7 @@ quivr_url = (
 
 headers = {
     "Content-Type": "application/json",
-    "Authorization": "Bearer " + quivr_token,
+    "Authorization": f"Bearer {quivr_token}",
 }
 
 

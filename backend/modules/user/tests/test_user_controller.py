@@ -1,6 +1,6 @@
 def test_get_user_info(client, api_key):
     # Send a request to get user information
-    response = client.get("/user", headers={"Authorization": "Bearer " + api_key})
+    response = client.get("/user", headers={"Authorization": f"Bearer {api_key}"})
 
     # Assert that the response status code is 200 (HTTP OK)
     assert response.status_code == 200
@@ -21,7 +21,7 @@ def test_get_user_info(client, api_key):
 def test_get_user_identity(client, api_key):
     # Send a request to get user identity
     response = client.get(
-        "/user/identity", headers={"Authorization": "Bearer " + api_key}
+        "/user/identity", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)

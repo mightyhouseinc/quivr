@@ -2,7 +2,7 @@ def test_get_notifications(client, api_key):
     # Send a request to get notifications
     response = client.get(
         "/notifications/ab780686-bcf3-46cb-9068-d724628caccd",
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
 
     # Assert that the response status code is 200 (HTTP OK)

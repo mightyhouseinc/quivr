@@ -19,25 +19,22 @@ def get_api_brain_definition_as_json_schema(brain: BrainEntity):
     required = []
     required.extend(api_brain_definition.params.required)
     required.extend(api_brain_definition.search_params.required)
-    properties = {}
-
     api_properties = (
         api_brain_definition.params.properties
         + api_brain_definition.search_params.properties
     )
 
-    for property in api_properties:
-        properties[property.name] = format_api_brain_property(property)
-
+    properties = {
+        property.name: format_api_brain_property(property)
+        for property in api_properties
+    }
     parameters = {
         "type": "object",
         "properties": properties,
         "required": required,
     }
-    schema = {
+    return {
         "name": sanitize_function_name(brain.name),
         "description": brain.description,
         "parameters": parameters,
     }
-
-    return schema

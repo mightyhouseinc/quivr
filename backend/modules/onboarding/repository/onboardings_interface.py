@@ -40,4 +40,3 @@ class OnboardingInterface(ABC):
         Remove onboarding if it is older than x days
         """
         """Update a prompt by id"""
-        pass

@@ -194,9 +194,7 @@ class UserUsage(Repository):
 
         user_settings = user_settings_response[0]
 
-        check_is_premium = self.check_if_is_premium_user(user_id)
-
-        if check_is_premium:
+        if check_is_premium := self.check_if_is_premium_user(user_id):
             # get the possibly updated user settings
             user_settings_response = (
                 self.db.from_("user_settings")
@@ -260,11 +258,9 @@ class UserUsage(Repository):
         )
 
     def update_user_request_count(self, user_id, daily_requests_count, date):
-        response = (
+        return (
             self.db.table("user_daily_usage")
             .update({"daily_requests_count": daily_requests_count})
             .match({"user_id": user_id, "date": date})
             .execute()
         )
-
-        return response

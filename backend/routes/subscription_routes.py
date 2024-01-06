@@ -73,12 +73,11 @@ def invite_users_to_brain(
                 )
 
         try:
-            should_send_invitation_email = (
+            if should_send_invitation_email := (
                 subscription_service.create_or_update_subscription_invitation(
                     subscription
                 )
-            )
-            if should_send_invitation_email:
+            ):
                 resend_invitation_email(
                     subscription,
                     inviter_email=current_user.email or "Quivr",
@@ -111,11 +110,9 @@ def get_users_with_brain_access(
     brain_access_list = []
 
     for brain_user in brain_users:
-        brain_access = {}
-        # TODO: find a way to fetch user email concurrently
-        brain_access["email"] = user_service.get_user_email_by_user_id(
-            brain_user.user_id
-        )
+        brain_access = {
+            "email": user_service.get_user_email_by_user_id(brain_user.user_id)
+        }
         brain_access["rights"] = brain_user.rights
         brain_access_list.append(brain_access)
 
@@ -152,13 +149,18 @@ async def remove_user_subscription(
         brain_users = brain_user_service.get_brain_users(
             brain_id=brain_id,
         )
-        brain_other_owners = [
+        if brain_other_owners := [
             brain
             for brain in brain_users
-            if brain.rights == "Owner" and str(brain.user_id) != str(current_user.id)
-        ]
+            if brain.rights == "Owner"
+            and str(brain.user_id) != str(current_user.id)
+        ]:
+            brain_user_service.delete_brain_user(
+                current_user.id,
+                brain_id,
+            )
 
-        if len(brain_other_owners) == 0:
+        else:
             brain_service.delete_brain(
                 brain_id=brain_id,
             )
@@ -170,12 +172,6 @@ async def remove_user_subscription(
                     brain_to_delete_prompt.status == PromptStatusEnum.private
                 ):
                     prompt_service.delete_prompt_by_id(targeted_brain.prompt_id)
-
-        else:
-            brain_user_service.delete_brain_user(
-                current_user.id,
-                brain_id,
-            )
 
     return {"message": f"Subscription removed successfully from brain {brain_id}"}
 

@@ -87,7 +87,7 @@ async def generate_signed_url_endpoint(
 
     validate_brain_authorization(brain_id=knowledge.brain_id, user_id=current_user.id)
 
-    if knowledge.file_name == None:
+    if knowledge.file_name is None:
         raise HTTPException(
             status_code=404,
             detail=f"Knowledge with id {knowledge_id} is not a file.",
@@ -95,6 +95,4 @@ async def generate_signed_url_endpoint(
 
     file_path_in_storage = f"{knowledge.brain_id}/{knowledge.file_name}"
 
-    file_signed_url = generate_file_signed_url(file_path_in_storage)
-
-    return file_signed_url
+    return generate_file_signed_url(file_path_in_storage)

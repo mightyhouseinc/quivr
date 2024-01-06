@@ -37,8 +37,7 @@ if os.getenv("DEV_MODE") == "true":
     debugpy.listen(("0.0.0.0", 5678))
 
 
-sentry_dsn = os.getenv("SENTRY_DSN")
-if sentry_dsn:
+if sentry_dsn := os.getenv("SENTRY_DSN"):
     sentry_sdk.init(
         dsn=sentry_dsn,
         sample_rate=0.1,

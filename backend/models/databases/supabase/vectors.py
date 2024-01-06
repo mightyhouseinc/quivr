@@ -6,7 +6,7 @@ class Vector(Repository):
         self.db = supabase_client
 
     def get_vectors_by_file_name(self, file_name):
-        response = (
+        return (
             self.db.table("vectors")
             .select(
                 "metadata->>file_name, metadata->>file_size, metadata->>file_extension, metadata->>file_url",
@@ -17,21 +17,17 @@ class Vector(Repository):
             .execute()
         )
 
-        return response
-
     def get_vectors_by_file_sha1(self, file_sha1):
-        response = (
+        return (
             self.db.table("vectors")
             .select("id")
             .filter("file_sha1", "eq", file_sha1)
             .execute()
         )
 
-        return response
-
     # TODO: remove duplicate similarity_search in supabase vector store
     def similarity_search(self, query_embedding, table, top_k, threshold):
-        response = self.db.rpc(
+        return self.db.rpc(
             table,
             {
                 "query_embedding": query_embedding,
@@ -39,7 +35,6 @@ class Vector(Repository):
                 "match_threshold": threshold,
             },
         ).execute()
-        return response
 
     def update_summary(self, document_id, summary_id):
         return (
@@ -50,7 +45,7 @@ class Vector(Repository):
         )
 
     def get_vectors_by_batch(self, batch_id):
-        response = (
+        return (
             self.db.table("vectors")
             .select(
                 "name:metadata->>file_name, size:metadata->>file_size",
@@ -60,10 +55,8 @@ class Vector(Repository):
             .execute()
         )
 
-        return response
-
     def get_vectors_in_batch(self, batch_ids):
-        response = (
+        return (
             self.db.table("vectors")
             .select(
                 "name:metadata->>file_name, size:metadata->>file_size",
@@ -72,5 +65,3 @@ class Vector(Repository):
             .in_("id", batch_ids)
             .execute()
         )
-
-        return response

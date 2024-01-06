@@ -66,5 +66,4 @@ def get_unique_files_from_vector_ids(vectors_ids):
         vectors_responses = [future.result() for future in futures]
 
     documents = [item for sublist in vectors_responses for item in sublist]
-    unique_files = [dict(t) for t in set(tuple(d.items()) for d in documents)]
-    return unique_files
+    return [dict(t) for t in {tuple(d.items()) for d in documents}]

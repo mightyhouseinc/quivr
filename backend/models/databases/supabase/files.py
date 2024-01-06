@@ -16,13 +16,10 @@ class File(Repository):
 
     def get_brain_vectors_by_brain_id_and_file_sha1(self, brain_id, file_sha1):
         self.set_file_vectors_ids(file_sha1)
-        # Check if file exists in that brain
-        response = (
+        return (
             self.db.table("brains_vectors")
             .select("brain_id, vector_id")
             .filter("brain_id", "eq", str(brain_id))
             .filter("file_sha1", "eq", file_sha1)
             .execute()
         )
-
-        return response

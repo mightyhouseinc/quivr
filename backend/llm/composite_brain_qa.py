@@ -196,7 +196,7 @@ class CompositeBrainQA(
             tool_choice="auto",
         )
 
-        brain_completion_output = self.make_recursive_tool_calls(
+        if brain_completion_output := self.make_recursive_tool_calls(
             messages,
             question,
             chat_id,
@@ -204,9 +204,7 @@ class CompositeBrainQA(
             available_functions,
             recursive_count=0,
             last_completion_response=response.choices[0],
-        )
-
-        if brain_completion_output:
+        ):
             answer = brain_completion_output.response.message.content
             new_chat = None
             if save_answer:
@@ -407,7 +405,7 @@ class CompositeBrainQA(
         connected_brains_details = {}
         for brain_id in connected_brains:
             brain = brain_service.get_brain_by_id(brain_id)
-            if brain == None:
+            if brain is None:
                 continue
 
             tools.append(format_brain_to_tool(brain))
@@ -562,8 +560,7 @@ class CompositeBrainQA(
                 response_tokens = []
                 for chunk in response_after_tools_answers:
                     print("chunk_response_after_tools_answers", chunk)
-                    content = chunk.choices[0].delta.content
-                    if content:
+                    if content := chunk.choices[0].delta.content:
                         streamed_chat_history.assistant = content
                         response_tokens.append(chunk.choices[0].delta.content)
                         yield f"data: {json.dumps(streamed_chat_history.dict())}"

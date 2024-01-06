@@ -9,8 +9,6 @@ logger = get_logger(__name__)
 def get_api_call_response_as_text(
     method, api_url, params, search_params, secrets
 ) -> str:
-    headers = {}
-
     api_url_with_search_params = api_url
     if search_params:
         api_url_with_search_params += "?"
@@ -19,9 +17,7 @@ def get_api_call_response_as_text(
                 f"{search_param}={search_params[search_param]}&"
             )
 
-    for secret in secrets:
-        headers[secret] = secrets[secret]
-
+    headers = {secret: secrets[secret] for secret in secrets}
     try:
         response = requests.request(
             method,

@@ -66,16 +66,15 @@ class Brains(BrainsInterface):
             .filter("brain_id", "eq", str(brain_id))
             .execute()
         )
-        if response.data == []:
-            return None
-        return BrainEntity(**response.data[0])
+        return None if response.data == [] else BrainEntity(**response.data[0])
 
     def delete_brain(self, brain_id: str):
-        results = (
-            self.db.table("brains").delete().match({"brain_id": brain_id}).execute()
+        return (
+            self.db.table("brains")
+            .delete()
+            .match({"brain_id": brain_id})
+            .execute()
         )
-
-        return results
 
     def update_brain_by_id(
         self, brain_id: UUID, brain: BrainUpdatableProperties
@@ -101,7 +100,4 @@ class Brains(BrainsInterface):
             .execute()
         ).data
 
-        if len(response) == 0:
-            return None
-
-        return BrainEntity(**response[0])
+        return None if len(response) == 0 else BrainEntity(**response[0])

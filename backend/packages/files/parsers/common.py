@@ -47,7 +47,4 @@ async def process_file(
         )
         logger.debug(f"Brain vector created: {result}")
 
-    if created_vector:
-        return len(created_vector)
-    else:
-        return 0
+    return len(created_vector) if created_vector else 0

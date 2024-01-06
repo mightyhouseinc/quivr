@@ -20,9 +20,7 @@ def verify_env_variables():
         "JWT_SECRET_KEY",
         "CELERY_BROKER_URL",
     ]
-    missing_vars = [var for var in required_vars if not os.getenv(var)]
-
-    if missing_vars:
+    if missing_vars := [var for var in required_vars if not os.getenv(var)]:
         missing_vars_str = ", ".join(missing_vars)
         pytest.fail(f"Required environment variables are missing: {missing_vars_str}")
 
@@ -36,9 +34,9 @@ def client():
 
 @pytest.fixture(scope="module")
 def api_key():
-    API_KEY = os.getenv("CI_TEST_API_KEY")
-    if not API_KEY:
+    if API_KEY := os.getenv("CI_TEST_API_KEY"):
+        return API_KEY
+    else:
         raise ValueError(
             "CI_TEST_API_KEY environment variable not set. Cannot run tests."
         )
-    return API_KEY

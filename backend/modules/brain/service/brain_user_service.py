@@ -124,9 +124,7 @@ class BrainUserService:
         return self.brain_user_repository.get_brain_for_user(user_id, brain_id)  # type: ignore
 
     def get_user_brains(self, user_id: UUID) -> list[MinimalUserBrainEntity]:
-        results = self.brain_user_repository.get_user_brains(user_id)  # type: ignore
-
-        return results  # type: ignore
+        return self.brain_user_repository.get_user_brains(user_id)
 
     def get_brain_users(self, brain_id: UUID) -> List[BrainUser]:
         return self.brain_user_repository.get_brain_users(brain_id)

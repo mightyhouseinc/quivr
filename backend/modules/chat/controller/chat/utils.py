@@ -46,4 +46,3 @@ def check_user_requests_limit(user: UserIdentity, model: str):
         userDailyUsage.handle_increment_user_request_count(
             date, user_choosen_model_price
         )
-        pass

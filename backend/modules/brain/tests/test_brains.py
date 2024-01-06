@@ -9,8 +9,7 @@ brain_user_service = BrainUserService()
 def test_retrieve_default_brain(client, api_key):
     # Making a GET request to the /brains/default/ endpoint
     response = client.get(
-        "/brains/default/",
-        headers={"Authorization": "Bearer " + api_key},
+        "/brains/default/", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -41,7 +40,7 @@ def test_create_brain(client, api_key):
     response = client.post(
         "/brains/",
         json=payload,
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -60,8 +59,7 @@ def test_create_brain(client, api_key):
 def test_retrieve_all_brains(client, api_key):
     # Making a GET request to the /brains/ endpoint to retrieve all brains for the current user
     response = client.get(
-        "/brains/",
-        headers={"Authorization": "Bearer " + api_key},
+        "/brains/", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -77,8 +75,7 @@ def test_retrieve_all_brains(client, api_key):
 def test_retrieve_one_brain(client, api_key):
     # Making a GET request to the /brains/default/ endpoint
     response = client.get(
-        "/brains/default/",
-        headers={"Authorization": "Bearer " + api_key},
+        "/brains/default/", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -91,8 +88,7 @@ def test_retrieve_one_brain(client, api_key):
 
     # Making a GET request to the /brains/{brain_id}/ endpoint
     response = client.get(
-        f"/brains/{brain_id}/",
-        headers={"Authorization": "Bearer " + api_key},
+        f"/brains/{brain_id}/", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -106,8 +102,7 @@ def test_retrieve_one_brain(client, api_key):
 def test_delete_all_brains(client, api_key):
     # First, retrieve all brains for the current user
     response = client.get(
-        "/brains/",
-        headers={"Authorization": "Bearer " + api_key},
+        "/brains/", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -122,7 +117,7 @@ def test_delete_all_brains(client, api_key):
         # Send a DELETE request to delete the specific brain
         delete_response = client.delete(
             f"/brains/{brain_id}/subscription",
-            headers={"Authorization": "Bearer " + api_key},
+            headers={"Authorization": f"Bearer {api_key}"},
         )
 
         # Assert that the DELETE response status code is 200 (HTTP OK)
@@ -130,8 +125,7 @@ def test_delete_all_brains(client, api_key):
 
     # Finally, retrieve all brains for the current user
     response = client.get(
-        "/brains/",
-        headers={"Authorization": "Bearer " + api_key},
+        "/brains/", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -146,8 +140,7 @@ def test_delete_all_brains_and_get_default_brain(client, api_key):
 
     # Now, retrieve all brains for the current user
     response = client.get(
-        "/brains/",
-        headers={"Authorization": "Bearer " + api_key},
+        "/brains/", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -158,8 +151,7 @@ def test_delete_all_brains_and_get_default_brain(client, api_key):
 
     # Get the default brain, it should create one if it doesn't exist
     response = client.get(
-        "/brains/default/",
-        headers={"Authorization": "Bearer " + api_key},
+        "/brains/default/", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -184,7 +176,7 @@ def test_set_as_default_brain_endpoint(client, api_key):
     response = client.post(
         "/brains/",
         json=payload,
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
 
     response_data = response.json()
@@ -194,7 +186,7 @@ def test_set_as_default_brain_endpoint(client, api_key):
     # Make a POST request to set the brain as default for the user
     response = client.post(
         f"/brains/{brain_id}/default",
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -208,7 +200,7 @@ def test_set_as_default_brain_endpoint(client, api_key):
     # Check if the brain is now the default for the user
 
     # Send a request to get user information
-    response = client.get("/user", headers={"Authorization": "Bearer " + api_key})
+    response = client.get("/user", headers={"Authorization": f"Bearer {api_key}"})
     # Assert that the response contains the expected fields
     user_info = response.json()
     user_id = user_info["id"]
@@ -238,7 +230,7 @@ def create_public_brain_retrieve_and_then_delete(client, api_key):
     response = client.post(
         "/brains/",
         json=payload,
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -255,8 +247,7 @@ def create_public_brain_retrieve_and_then_delete(client, api_key):
 
     # Now, retrieve all brains for the current user
     response = client.get(
-        "/brains/public",
-        headers={"Authorization": "Bearer " + api_key},
+        "/brains/public", headers={"Authorization": f"Bearer {api_key}"}
     )
 
     # Assert that the response status code is 200 (HTTP OK)
@@ -271,7 +262,7 @@ def create_public_brain_retrieve_and_then_delete(client, api_key):
     # Delete the brain
     response = client.delete(
         f"/brains/{brain_id}/subscription",
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
 
     # Assert that the DELETE response status code is 200 (HTTP OK)

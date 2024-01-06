@@ -13,10 +13,7 @@ def test_read_main(client, api_key):
 def test_create_and_delete_api_key(client, api_key):
     # First, let's create an API key
     response = client.post(
-        "/api-key",
-        headers={
-            "Authorization": "Bearer " + api_key,
-        },
+        "/api-key", headers={"Authorization": f"Bearer {api_key}"}
     )
     assert response.status_code == 200
     api_key_info = response.json()

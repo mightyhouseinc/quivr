@@ -82,10 +82,7 @@ class SubscriptionInvitationService:
             .eq("email", subscription.email)
             .execute()
         )
-        if response.data:
-            return response.data[0]  # return the first matching invitation
-        else:
-            return None
+        return response.data[0] if response.data else None
 
     def remove_invitation(self, subscription: BrainSubscription):
         logger.info(

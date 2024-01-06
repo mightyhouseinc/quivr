@@ -40,18 +40,16 @@ class Onboarding(OnboardingInterface):
             key: value for key, value in onboarding.dict().items() if value is not None
         }
 
-        response = (
-            self.db.from_("onboardings")
+        if (
+            response := self.db.from_("onboardings")
             .update(update_data)
             .match({"user_id": user_id})
             .execute()
             .data
-        )
-
-        if not response:
+        ):
+            return OnboardingStates(**response[0])
+        else:
             raise HTTPException(404, "User onboarding not updated")
-
-        return OnboardingStates(**response[0])
 
     def remove_user_onboarding(self, user_id):
         """
@@ -91,7 +89,7 @@ class Onboarding(OnboardingInterface):
         """
         Remove onboarding if it is older than x days
         """
-        onboarding_data = (
+        return (
             self.db.from_("onboardings")
             .delete()
             .lt(
@@ -102,5 +100,3 @@ class Onboarding(OnboardingInterface):
             )
             .execute()
         ).data
-
-        return onboarding_data

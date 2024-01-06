@@ -30,12 +30,10 @@ class BrainSubscription(Repository):
         return response.data
 
     def get_subscription_invitations_by_brain_id_and_email(self, brain_id, user_email):
-        response = (
+        return (
             self.db.table("brain_subscription_invitations")
             .select("*")
             .eq("brain_id", str(brain_id))
             .eq("email", user_email)
             .execute()
         )
-
-        return response

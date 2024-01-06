@@ -43,7 +43,7 @@ class OnboardingService:
 
         updated_onboarding = self.repository.update_user_onboarding(user_id, onboarding)
 
-        if all(not value for value in updated_onboarding.dict().values()):
+        if not any(updated_onboarding.dict().values()):
             self.repository.remove_user_onboarding(user_id)
 
         return updated_onboarding

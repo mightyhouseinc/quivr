@@ -31,10 +31,9 @@ def merge_chat_history_and_notifications(
     for item in chat_history_and_notifications:
         if isinstance(item, GetChatHistoryOutput):
             item_type = ChatItemType.MESSAGE
-            body = item
         else:
             item_type = ChatItemType.NOTIFICATION
-            body = item
+        body = item
         transformed_item = ChatItem(item_type=item_type, body=body)
         transformed_data.append(transformed_item)
 

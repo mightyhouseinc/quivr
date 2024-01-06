@@ -15,8 +15,7 @@ def upload_file_storage(file, file_identifier: str):
     response = None
 
     try:
-        response = supabase_client.storage.from_("quivr").upload(file_identifier, file)
-        return response
+        return supabase_client.storage.from_("quivr").upload(file_identifier, file)
     except Exception as e:
         logger.error(e)
         raise e

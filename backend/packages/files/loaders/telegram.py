@@ -34,10 +34,7 @@ def concatenate_rows(row: dict) -> str:
         text = ""
 
     # Skip messages with empty text
-    if not text.strip():
-        return ""
-
-    return f"{sender} on {date}: {text}\n\n"
+    return "" if not text.strip() else f"{sender} on {date}: {text}\n\n"
 
 
 class TelegramChatFileLoader(BaseLoader):
@@ -58,7 +55,7 @@ class TelegramChatFileLoader(BaseLoader):
             concatenate_rows(message)
             for message in d["messages"]
             if message["type"] == "message"
-            and (isinstance(message["text"], str) or isinstance(message["text"], list))
+            and (isinstance(message["text"], (str, list)))
         )
         metadata = {"source": str(p)}
 

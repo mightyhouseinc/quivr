@@ -20,8 +20,7 @@ from packages.files.processors import filter_file
 
 logger = get_logger(__name__)
 
-sentry_dsn = os.getenv("SENTRY_DSN")
-if sentry_dsn:
+if sentry_dsn := os.getenv("SENTRY_DSN"):
     sentry_sdk.init(
         dsn=sentry_dsn,
         sample_rate=0.1,
@@ -74,7 +73,7 @@ def process_file_and_notify(
 ):
     try:
         supabase_client = get_supabase_client()
-        tmp_file_name = "tmp-file-" + file_name
+        tmp_file_name = f"tmp-file-{file_name}"
         tmp_file_name = tmp_file_name.replace("/", "_")
 
         with open(tmp_file_name, "wb+") as f:

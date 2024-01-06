@@ -58,9 +58,7 @@ class Prompts(PromptsInterface):
             self.db.from_("prompts").select("*").filter("id", "eq", prompt_id).execute()
         ).data
 
-        if response == []:
-            return None
-        return Prompt(**response[0])
+        return None if response == [] else Prompt(**response[0])
 
     def get_public_prompts(self):
         """

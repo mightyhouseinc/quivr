@@ -119,7 +119,7 @@ class APIBrainQA(KnowledgeBrainQA, QAInterface):
                 messages.append(
                     {
                         "role": "function",
-                        "name": function_call["name"],
+                        "name": function_name,
                         "content": f"The function {function_name} was called and gave The following answer:(data from function) {api_call_response} (end of data from function). Don't call this function again unless there was an error or extremely necessary and asked specifically by the user.",
                     }
                 )
@@ -132,17 +132,15 @@ class APIBrainQA(KnowledgeBrainQA, QAInterface):
                 ):
                     yield value
 
-            else:
-                if (
+            elif (
                     hasattr(chunk.choices[0], "delta")
                     and chunk.choices[0].delta
                     and hasattr(chunk.choices[0].delta, "content")
                 ):
-                    content = chunk.choices[0].delta.content
-                    yield content
-                else:  # pragma: no cover
-                    yield "**...**"
-                    break
+                yield chunk.choices[0].delta.content
+            else:  # pragma: no cover
+                yield "**...**"
+                break
 
     async def generate_stream(
         self,

@@ -144,8 +144,7 @@ async def create_question_handler(
         or not chat_question.max_tokens
     ):
         if brain_id:
-            brain = brain_service.get_brain_by_id(brain_id)
-            if brain:
+            if brain := brain_service.get_brain_by_id(brain_id):
                 fallback_model = brain.model or fallback_model
                 fallback_temperature = brain.temperature or fallback_temperature
                 fallback_max_tokens = brain.max_tokens or fallback_max_tokens
@@ -168,11 +167,9 @@ async def create_question_handler(
             user_id=current_user.id,
         )
 
-        chat_answer = gpt_answer_generator.generate_answer(
+        return gpt_answer_generator.generate_answer(
             chat_id, chat_question, save_answer=True
         )
-
-        return chat_answer
     except HTTPException as e:
         raise e
 
@@ -217,8 +214,7 @@ async def create_stream_question_handler(
         fallback_max_tokens = 256
 
         if brain_id:
-            brain = brain_service.get_brain_by_id(brain_id)
-            if brain:
+            if brain := brain_service.get_brain_by_id(brain_id):
                 fallback_model = brain.model or fallback_model
                 fallback_temperature = brain.temperature or fallback_temperature
                 fallback_max_tokens = brain.max_tokens or fallback_max_tokens

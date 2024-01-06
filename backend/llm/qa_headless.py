@@ -47,10 +47,7 @@ class HeadlessQA(BaseModel, QAInterface):
         self, streaming
     ) -> List[AsyncIteratorCallbackHandler]:
         """If streaming is set, set the AsyncIteratorCallbackHandler as the only callback."""
-        if streaming:
-            return [AsyncIteratorCallbackHandler()]
-        else:
-            return []
+        return [AsyncIteratorCallbackHandler()] if streaming else []
 
     def __init__(self, **data):
         super().__init__(**data)
@@ -97,8 +94,7 @@ class HeadlessQA(BaseModel, QAInterface):
         messages = [
             HumanMessagePromptTemplate.from_template("{question}"),
         ]
-        CHAT_PROMPT = ChatPromptTemplate.from_messages(messages)
-        return CHAT_PROMPT
+        return ChatPromptTemplate.from_messages(messages)
 
     def generate_answer(
         self, chat_id: UUID, question: ChatQuestion, save_answer: bool = True
@@ -121,33 +117,7 @@ class HeadlessQA(BaseModel, QAInterface):
         )
         model_prediction = answering_llm.predict_messages(messages)
         answer = model_prediction.content
-        if save_answer:
-            new_chat = chat_service.update_chat_history(
-                CreateChatHistory(
-                    **{
-                        "chat_id": chat_id,
-                        "user_message": question.question,
-                        "assistant": answer,
-                        "brain_id": None,
-                        "prompt_id": self.prompt_to_use_id,
-                    }
-                )
-            )
-
-            return GetChatHistoryOutput(
-                **{
-                    "chat_id": chat_id,
-                    "user_message": question.question,
-                    "assistant": answer,
-                    "message_time": new_chat.message_time,
-                    "prompt_title": self.prompt_to_use.title
-                    if self.prompt_to_use
-                    else None,
-                    "brain_name": None,
-                    "message_id": new_chat.message_id,
-                }
-            )
-        else:
+        if not save_answer:
             return GetChatHistoryOutput(
                 **{
                     "chat_id": chat_id,
@@ -161,6 +131,31 @@ class HeadlessQA(BaseModel, QAInterface):
                     "message_id": None,
                 }
             )
+        new_chat = chat_service.update_chat_history(
+            CreateChatHistory(
+                **{
+                    "chat_id": chat_id,
+                    "user_message": question.question,
+                    "assistant": answer,
+                    "brain_id": None,
+                    "prompt_id": self.prompt_to_use_id,
+                }
+            )
+        )
+
+        return GetChatHistoryOutput(
+            **{
+                "chat_id": chat_id,
+                "user_message": question.question,
+                "assistant": answer,
+                "message_time": new_chat.message_time,
+                "prompt_title": self.prompt_to_use.title
+                if self.prompt_to_use
+                else None,
+                "brain_name": None,
+                "message_id": new_chat.message_id,
+            }
+        )
 
     async def generate_stream(
         self, chat_id: UUID, question: ChatQuestion, save_answer: bool = True

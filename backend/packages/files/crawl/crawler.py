@@ -20,10 +20,7 @@ class CrawlWebsite(BaseModel):
     def _crawl(self, url):
         try:
             response = requests.get(url)
-            if response.status_code == 200:
-                return response.text
-            else:
-                return None
+            return response.text if response.status_code == 200 else None
         except Exception as e:
             print(e)
             raise
@@ -66,7 +63,7 @@ class CrawlWebsite(BaseModel):
         extracted_content = self._process_recursive(self.url, self.depth, visited_urls)
 
         # Create a file
-        file_name = slugify(self.url) + ".txt"
+        file_name = f"{slugify(self.url)}.txt"
         temp_file_path = os.path.join(tempfile.gettempdir(), file_name)
         with open(temp_file_path, "w") as temp_file:
             temp_file.write(extracted_content)  # type: ignore

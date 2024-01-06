@@ -71,7 +71,7 @@ async def upload_file(
         )
 
     file_content = await uploadFile.read()
-    filename_with_brain_id = str(brain_id) + "/" + str(uploadFile.filename)
+    filename_with_brain_id = f"{str(brain_id)}/{str(uploadFile.filename)}"
 
     try:
         file_in_storage = upload_file_storage(file_content, filename_with_brain_id)

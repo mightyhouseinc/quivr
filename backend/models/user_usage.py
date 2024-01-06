@@ -20,17 +20,13 @@ class UserUsage(UserIdentity):
         """
         Fetch the user request stats from the database
         """
-        request = self.supabase_db.get_user_usage(self.id)
-
-        return request
+        return self.supabase_db.get_user_usage(self.id)
 
     def get_model_settings(self):
         """
         Fetch the user request stats from the database
         """
-        request = self.supabase_db.get_model_settings()
-
-        return request
+        return self.supabase_db.get_model_settings()
 
     def get_user_settings(self):
         """

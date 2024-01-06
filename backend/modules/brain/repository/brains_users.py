@@ -81,17 +81,15 @@ class BrainsUsers(BrainsUsersInterface):
         return results.data
 
     def delete_brain_users(self, brain_id: str):
-        results = (
+        return (
             self.db.table("brains_users")
             .delete()
             .match({"brain_id": brain_id})
             .execute()
         )
 
-        return results
-
     def create_brain_user(self, user_id: UUID, brain_id, rights, default_brain: bool):
-        response = (
+        return (
             self.db.table("brains_users")
             .insert(
                 {
@@ -103,7 +101,6 @@ class BrainsUsers(BrainsUsersInterface):
             )
             .execute()
         )
-        return response
 
     def get_user_default_brain_id(self, user_id: UUID) -> UUID | None:
         response = (
@@ -115,9 +112,7 @@ class BrainsUsers(BrainsUsersInterface):
                 .execute()
             )
         ).data
-        if len(response) == 0:
-            return None
-        return UUID(response[0].get("brain_id"))
+        return None if len(response) == 0 else UUID(response[0].get("brain_id"))
 
     def get_brain_users(self, brain_id: UUID) -> list[BrainUser]:
         response = (
@@ -130,15 +125,13 @@ class BrainsUsers(BrainsUsersInterface):
         return [BrainUser(**item) for item in response.data]
 
     def delete_brain_subscribers(self, brain_id: UUID):
-        results = (
+        return (
             self.db.table("brains_users")
             .delete()
             .match({"brain_id": str(brain_id)})
             .match({"rights": "Viewer"})
             .execute()
         ).data
-
-        return results
 
     def get_brain_subscribers_count(self, brain_id: UUID) -> int:
         response = (

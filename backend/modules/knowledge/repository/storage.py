@@ -21,8 +21,7 @@ class Storage(StorageInterface):
         Remove file from storage
         """
         try:
-            response = self.db.storage.from_("quivr").remove([file_name])
-            return response
+            return self.db.storage.from_("quivr").remove([file_name])
         except Exception as e:
             logger.error(e)
             # raise e

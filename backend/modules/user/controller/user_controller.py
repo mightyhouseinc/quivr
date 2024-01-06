@@ -42,9 +42,9 @@ async def get_user_endpoint(
 
     user_daily_usage = UserUsage(id=current_user.id)
     requests_stats = user_daily_usage.get_user_usage()
-    default_brain = brain_user_service.get_user_default_brain(current_user.id)
-
-    if default_brain:
+    if default_brain := brain_user_service.get_user_default_brain(
+        current_user.id
+    ):
         defaul_brain_size = BrainVectorService(default_brain.brain_id).brain_size
     else:
         defaul_brain_size = 0

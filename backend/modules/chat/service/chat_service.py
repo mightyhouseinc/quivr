@@ -59,30 +59,29 @@ class ChatService:
         history: List[dict] = self.repository.get_chat_history(chat_id).data
         if history is None:
             return []
-        else:
-            enriched_history: List[GetChatHistoryOutput] = []
-            for message in history:
-                message = ChatHistory(message)
-                brain = None
-                if message.brain_id:
-                    brain = brain_service.get_brain_by_id(message.brain_id)
+        enriched_history: List[GetChatHistoryOutput] = []
+        for message in history:
+            message = ChatHistory(message)
+            brain = None
+            if message.brain_id:
+                brain = brain_service.get_brain_by_id(message.brain_id)
 
-                prompt = None
-                if message.prompt_id:
-                    prompt = prompt_service.get_prompt_by_id(message.prompt_id)
+            prompt = None
+            if message.prompt_id:
+                prompt = prompt_service.get_prompt_by_id(message.prompt_id)
 
-                enriched_history.append(
-                    GetChatHistoryOutput(
-                        chat_id=(UUID(message.chat_id)),
-                        message_id=(UUID(message.message_id)),
-                        user_message=message.user_message,
-                        assistant=message.assistant,
-                        message_time=message.message_time,
-                        brain_name=brain.name if brain else None,
-                        prompt_title=prompt.title if prompt else None,
-                    )
+            enriched_history.append(
+                GetChatHistoryOutput(
+                    chat_id=(UUID(message.chat_id)),
+                    message_id=(UUID(message.message_id)),
+                    user_message=message.user_message,
+                    assistant=message.assistant,
+                    message_time=message.message_time,
+                    brain_name=brain.name if brain else None,
+                    prompt_title=prompt.title if prompt else None,
                 )
-            return enriched_history
+            )
+        return enriched_history
 
     def get_chat_history_with_notifications(
         self,
@@ -94,19 +93,16 @@ class ChatService:
 
     def get_user_chats(self, user_id: str) -> List[Chat]:
         response = self.repository.get_user_chats(user_id)
-        chats = [Chat(chat_dict) for chat_dict in response.data]
-        return chats
+        return [Chat(chat_dict) for chat_dict in response.data]
 
     def update_chat_history(self, chat_history: CreateChatHistory) -> ChatHistory:
-        response: List[ChatHistory] = (
-            self.repository.update_chat_history(chat_history)
-        ).data
-        if len(response) == 0:
+        if response := (self.repository.update_chat_history(chat_history)).data:
+            return ChatHistory(response[0])  # pyright: ignore reportPrivateUsage=none
+        else:
             raise HTTPException(
                 status_code=500,
                 detail="An exception occurred while updating chat history.",
             )
-        return ChatHistory(response[0])  # pyright: ignore reportPrivateUsage=none
 
     def update_chat(self, chat_id, chat_data: ChatUpdatableProperties) -> Chat:
         if not chat_id:
@@ -161,9 +157,7 @@ class ChatService:
             self.repository.delete_chat_history(chat_id)
         except Exception as e:
             print(e)
-            pass
         try:
             self.repository.delete_chat(chat_id)
         except Exception as e:
             print(e)
-            pass

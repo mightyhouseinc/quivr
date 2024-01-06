@@ -129,13 +129,13 @@ def get_supabase_db() -> SupabaseDB:
 
 def get_embeddings():
     settings = BrainSettings()  # pyright: ignore reportPrivateUsage=none
-    if settings.ollama_api_base_url:
-        embeddings = OllamaEmbeddings(
+    return (
+        OllamaEmbeddings(
             base_url=settings.ollama_api_base_url,
-        )  # pyright: ignore reportPrivateUsage=none
-    else:
-        embeddings = OpenAIEmbeddings()  # pyright: ignore reportPrivateUsage=none
-    return embeddings
+        )
+        if settings.ollama_api_base_url
+        else OpenAIEmbeddings()
+    )
 
 
 def get_documents_vector_store() -> SupabaseVectorStore:
@@ -144,7 +144,6 @@ def get_documents_vector_store() -> SupabaseVectorStore:
     supabase_client: Client = create_client(
         settings.supabase_url, settings.supabase_service_key
     )
-    documents_vector_store = SupabaseVectorStore(
+    return SupabaseVectorStore(
         supabase_client, embeddings, table_name="vectors"
     )
-    return documents_vector_store

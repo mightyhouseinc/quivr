@@ -62,9 +62,7 @@ class Users(UsersInterface):
             .execute()
             .data
         )
-        if len(response) > 0:
-            return response[0]["user_id"]
-        return None
+        return response[0]["user_id"] if len(response) > 0 else None
 
     def get_user_email_by_user_id(self, user_id):
         response = self.db.rpc(

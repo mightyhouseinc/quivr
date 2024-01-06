@@ -49,7 +49,7 @@ class BrainService:
         user_id: UUID,
         brain: Optional[CreateBrainProperties],
     ) -> BrainEntity:
-        if brain == None:
+        if brain is None:
             brain = CreateBrainProperties()  # type: ignore model and brain_definition
 
         if brain.brain_type == BrainType.API:
@@ -59,8 +59,7 @@ class BrainService:
         if brain.brain_type == BrainType.COMPOSITE:
             return self.create_brain_composite(brain)
 
-        created_brain = self.brain_repository.create_brain(brain)
-        return created_brain
+        return self.brain_repository.create_brain(brain)
 
     def create_brain_api(
         self,
@@ -218,7 +217,7 @@ class BrainService:
 
     def get_brain_details(self, brain_id: UUID) -> BrainEntity | None:
         brain = self.brain_repository.get_brain_details(brain_id)
-        if brain == None:
+        if brain is None:
             return None
 
         if brain.brain_type == BrainType.API:

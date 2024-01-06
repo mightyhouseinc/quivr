@@ -83,13 +83,11 @@ class Knowledges(KnowledgeInterface):
             brain_id (UUID): The id of the brain
         """
         all_knowledge = self.get_all_knowledge_in_brain(brain_id)
-        knowledge_to_delete_list = []
-
-        for knowledge in all_knowledge:
-            if knowledge.file_name:
-                knowledge_to_delete_list.append(f"{brain_id}/{knowledge.file_name}")
-
-        if knowledge_to_delete_list:
+        if knowledge_to_delete_list := [
+            f"{brain_id}/{knowledge.file_name}"
+            for knowledge in all_knowledge
+            if knowledge.file_name
+        ]:
             self.db.storage.from_("quivr").remove(knowledge_to_delete_list)
 
         self.db.from_("knowledge").delete().filter(

@@ -9,17 +9,15 @@ class Chats(ChatsInterface):
         self.db = supabase_client
 
     def create_chat(self, new_chat):
-        response = self.db.table("chats").insert(new_chat).execute()
-        return response
+        return self.db.table("chats").insert(new_chat).execute()
 
     def get_chat_by_id(self, chat_id: str):
-        response = (
+        return (
             self.db.from_("chats")
             .select("*")
             .filter("chat_id", "eq", chat_id)
             .execute()
         )
-        return response
 
     def add_question_and_answer(self, chat_id, question_and_answer):
         response = (
@@ -39,7 +37,7 @@ class Chats(ChatsInterface):
         return None
 
     def get_chat_history(self, chat_id: str):
-        reponse = (
+        return (
             self.db.from_("chat_history")
             .select("*")
             .filter("chat_id", "eq", chat_id)
@@ -47,20 +45,17 @@ class Chats(ChatsInterface):
             .execute()
         )
 
-        return reponse
-
     def get_user_chats(self, user_id):
-        response = (
+        return (
             self.db.from_("chats")
             .select("chat_id,user_id,creation_time,chat_name")
             .filter("user_id", "eq", user_id)
             .order("creation_time", desc=False)
             .execute()
         )
-        return response
 
     def update_chat_history(self, chat_history):
-        response = (
+        return (
             self.db.table("chat_history")
             .insert(
                 {
@@ -78,24 +73,21 @@ class Chats(ChatsInterface):
             .execute()
         )
 
-        return response
-
     def update_chat(self, chat_id, updates):
-        response = (
-            self.db.table("chats").update(updates).match({"chat_id": chat_id}).execute()
+        return (
+            self.db.table("chats")
+            .update(updates)
+            .match({"chat_id": chat_id})
+            .execute()
         )
 
-        return response
-
     def update_message_by_id(self, message_id, updates):
-        response = (
+        return (
             self.db.table("chat_history")
             .update(updates)
             .match({"message_id": message_id})
             .execute()
         )
-
-        return response
 
     def delete_chat(self, chat_id):
         self.db.table("chats").delete().match({"chat_id": chat_id}).execute()

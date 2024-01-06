@@ -4,10 +4,7 @@ import string
 
 def test_get_all_chats(client, api_key):
     # Making a GET request to the /chat endpoint to retrieve all chats
-    response = client.get(
-        "/chat",
-        headers={"Authorization": "Bearer " + api_key},
-    )
+    response = client.get("/chat", headers={"Authorization": f"Bearer {api_key}"})
 
     # Assert that the response status code is 200 (HTTP OK)
     assert response.status_code == 200
@@ -29,17 +26,17 @@ def test_create_chat_and_talk(client, api_key):
     )
 
     brain_response = client.get(
-        "/brains/default", headers={"Authorization": "Bearer " + api_key}
+        "/brains/default", headers={"Authorization": f"Bearer {api_key}"}
     )
     assert brain_response.status_code == 200
     default_brain_id = brain_response.json()["id"]
-    print("Default brain id: " + default_brain_id)
+    print(f"Default brain id: {default_brain_id}")
 
     # Create a chat
     response = client.post(
         "/chat",
         json={"name": random_chat_name},
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
     assert response.status_code == 200
 
@@ -55,7 +52,7 @@ def test_create_chat_and_talk(client, api_key):
             "temperature": "0",
             "max_tokens": "256",
         },
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
     assert response.status_code == 200
 
@@ -67,14 +64,14 @@ def test_create_chat_and_talk(client, api_key):
             "temperature": "0",
             "max_tokens": "256",
         },
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
     print(response)
     assert response.status_code == 200
 
     # Now, let's delete the chat
     delete_response = client.delete(
-        "/chat/" + chat_id, headers={"Authorization": "Bearer " + api_key}
+        f"/chat/{chat_id}", headers={"Authorization": f"Bearer {api_key}"}
     )
     assert delete_response.status_code == 200
 
@@ -89,7 +86,7 @@ def test_create_chat_and_talk_with_no_brain(client, api_key):
     response = client.post(
         "/chat",
         json={"name": random_chat_name},
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
     assert response.status_code == 200
 
@@ -105,20 +102,20 @@ def test_create_chat_and_talk_with_no_brain(client, api_key):
             "temperature": "0",
             "max_tokens": "256",
         },
-        headers={"Authorization": "Bearer " + api_key},
+        headers={"Authorization": f"Bearer {api_key}"},
     )
     assert response.status_code == 200
 
     # Now, let's delete the chat
     delete_response = client.delete(
-        "/chat/" + chat_id, headers={"Authorization": "Bearer " + api_key}
+        f"/chat/{chat_id}", headers={"Authorization": f"Bearer {api_key}"}
     )
     assert delete_response.status_code == 200
 
 
 # Test delete all chats for a user
 def test_delete_all_chats(client, api_key):
-    chats = client.get("/chat", headers={"Authorization": "Bearer " + api_key})
+    chats = client.get("/chat", headers={"Authorization": f"Bearer {api_key}"})
     assert chats.status_code == 200
     chats_data = chats.json()
     for chat in chats_data["chats"]:
@@ -127,6 +124,6 @@ def test_delete_all_chats(client, api_key):
         assert "chat_name" in chat
         chat_id = chat["chat_id"]
         delete_response = client.delete(
-            "/chat/" + chat_id, headers={"Authorization": "Bearer " + api_key}
+            f"/chat/{chat_id}", headers={"Authorization": f"Bearer {api_key}"}
         )
         assert delete_response.status_code == 200

@@ -144,18 +144,12 @@ class QuivrRAG(BaseModel, RAGInterface):
             self.prompt_to_use.content if self.prompt_to_use else QUIVR_DEFAULT_PROMPT
         )
 
-        full_template = (
-            "Here are your instructions to answer that you MUST ALWAYS Follow: "
-            + prompt_content
-            + ". "
-            + system_template
-        )
+        full_template = f"Here are your instructions to answer that you MUST ALWAYS Follow: {prompt_content}. {system_template}"
         messages = [
             SystemMessagePromptTemplate.from_template(full_template),
             HumanMessagePromptTemplate.from_template("{question}"),
         ]
-        CHAT_PROMPT = ChatPromptTemplate.from_messages(messages)
-        return CHAT_PROMPT
+        return ChatPromptTemplate.from_messages(messages)
 
     def get_doc_chain(self, streaming, callbacks=None):
         answering_llm = self._create_llm(
@@ -164,10 +158,11 @@ class QuivrRAG(BaseModel, RAGInterface):
             streaming=streaming,
         )
 
-        doc_chain = load_qa_chain(
-            answering_llm, chain_type="stuff", prompt=self._create_prompt_template()
+        return load_qa_chain(
+            answering_llm,
+            chain_type="stuff",
+            prompt=self._create_prompt_template(),
         )
-        return doc_chain
 
     def get_question_generation_llm(self):
         return LLMChain(

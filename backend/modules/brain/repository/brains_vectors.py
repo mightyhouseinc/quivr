@@ -50,10 +50,7 @@ class BrainsVectors(BrainsVectorsInterface):
 
         vector_ids = [item["vector_id"] for item in response.data]
 
-        if len(vector_ids) == 0:
-            return []
-
-        return vector_ids
+        return [] if not vector_ids else vector_ids
 
     def delete_file_from_brain(self, brain_id, file_name: str):
         # First, get the vector_ids associated with the file_name
@@ -94,11 +91,9 @@ class BrainsVectors(BrainsVectorsInterface):
         return {"message": f"File {file_name} in brain {brain_id} has been deleted."}
 
     def delete_brain_vector(self, brain_id: str):
-        results = (
+        return (
             self.db.table("brains_vectors")
             .delete()
             .match({"brain_id": brain_id})
             .execute()
         )
-
-        return results
